@@ -3,33 +3,37 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Cd anlegen" Height="200" Width="306"
         Style="{StaticResource ResourceKey=WindowBackGround}">
-    
-  <Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition/>
-    </Grid.RowDefinitions>
-      
-        <TextBlock Grid.Row="0" Style="{StaticResource ResourceKey=FromCaptionStyle}">Neue Cd anlegen</TextBlock>
-      
-    <Grid Name="grdCdFields" Grid.Row="1">
-      <Grid.RowDefinitions>
-        <RowDefinition/>
-        <RowDefinition/>
-      </Grid.RowDefinitions>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="100"/>
-        <ColumnDefinition/>
-      </Grid.ColumnDefinitions>
-      <Label Grid.Column="0" Grid.Row="0">Cd-Titel:</Label>
-      <TextBox Name="tbTitle" Grid.Column="1" Grid.Row="0"  Text="{Binding Path=AlbumTitle}" ></TextBox>
-      <Label Grid.Column="0" Grid.Row="1">Artist:</Label>
-      <TextBox Name="tbArtist" Grid.Column="1" Grid.Row="1" Text="{Binding Path=Artist}" ></TextBox>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="txtTitle"  Text="Neue Cd anlegen" Grid.Row="0" Style="{StaticResource ResourceKey=FromCaptionStyle}"/>
+
+        <Grid Name="grdCdFields" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            
+            <Label Grid.Column="0" Grid.Row="0">Cd-Titel:</Label>
+            <TextBox Name="txtCdTitle" Grid.Column="1" Grid.Row="0"  Text="{Binding Path=AlbumTitle}"/>
+            <Label Grid.Column="0" Grid.Row="1">Artist:</Label>
+            <TextBox Name="txtArtist" Grid.Column="1" Grid.Row="1" Text="{Binding Path=Artist}"/>
+            
+        </Grid>
+        
+        <UniformGrid Rows="1" Grid.Row="2">
+            <Button Name="btnSave" Template="{StaticResource ButtonTemplate}" Content="Speichern"/>
+            <Button Name="btnCancel" Template="{StaticResource ButtonTemplate}" Content="Abbrechen"/>
+        </UniformGrid>
+        
     </Grid>
-    <UniformGrid Rows="1" Grid.Row="2">
-      <Button Name="btSave" Template="{StaticResource ButtonTemplate}">Speichern</Button>
-      <Button Name="btCancel" Template="{StaticResource ButtonTemplate}">Abbrechen</Button>
-    </UniformGrid>
-  </Grid>
 </Window>

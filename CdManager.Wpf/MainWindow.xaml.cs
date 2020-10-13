@@ -1,7 +1,10 @@
-﻿using System;
+﻿
+using CdManager.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -11,50 +14,71 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using CdManager.Model;
-using System.Collections.ObjectModel;
 
 namespace CdManager.Wpf
 {
-  /// <summary>
-  /// Interaction logic for MainWindow.xaml
-  /// </summary>
-  public partial class MainWindow : Window
-  {
-    private List<Cd> _cds;
-
-    public MainWindow()
-    {
-      InitializeComponent();
-      Loaded += new RoutedEventHandler(MainWindow_Loaded);
-
-    }
-
-    void MainWindow_Loaded(object sender, RoutedEventArgs e)
-    {
-      Repository rep = Repository.GetInstance();
-      _cds = rep.GetAllCds();
-      lbxCds.ItemsSource = _cds;
-
-      btNew.Click += BtNew_Click;
-    }
-
     /// <summary>
-    /// Button Neu gedrückt
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    void BtNew_Click(object sender, RoutedEventArgs e)
+    public partial class MainWindow : Window
     {
-      AddCdWindow addCdWindow = new AddCdWindow();
-      addCdWindow.ShowDialog();
-      //Nachdem der "Neuanlegen Dialog" geschlossen wurde
-      //Liste der Cds aktualisieren:
-      _cds = Repository.GetInstance().GetAllCds();
-      //Bei normaler Collection muss zusätzlich ItemSource neu gesetzt werden
-      //um Aktualisierung auszulösen (Alternative: ObservableCollection):
-      lbxCds.ItemsSource = _cds;
-    }
+        public List<Cd> _cds { get; set; }
 
-  }
+        public MainWindow()
+        {
+            InitializeComponent();
+            Loaded += MainWindow_Loaded;
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            Repository repository = Repository.GetInstance();
+            _cds = repository.GetAllCds();
+            lbxCds.ItemsSource = _cds;
+
+            btnNew.Click += BtnNew_Click;
+            btnDelete.Click += BtnDelete_Click;
+            btnEdit.Click += BtnEdit_Click;
+        }
+
+        private void BtnEdit_Click(object sender, RoutedEventArgs e)
+        {
+            Cd selectedCd = lbxCds.SelectedItem as Cd;
+            if (selectedCd == null)
+            {
+                MessageBox.Show("Sie müssen eine Cd auswählen!");
+            }
+            else
+            {
+                AddCdWindow addCdWindow = new AddCdWindow(selectedCd);
+                addCdWindow.ShowDialog();
+            }
+
+            _cds = Repository.GetInstance().GetAllCds();
+            lbxCds.ItemsSource = _cds;
+        }
+
+        private void BtnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            Cd selectedCd = lbxCds.SelectedItem as Cd;
+            if (selectedCd == null)
+            {
+                MessageBox.Show("Sie müssen eine Cd auswählen!");
+            }
+
+            Repository.GetInstance().RemoveCd(selectedCd);
+
+            _cds = Repository.GetInstance().GetAllCds();
+            lbxCds.ItemsSource = _cds;
+        }
+
+        private void BtnNew_Click(object sender, RoutedEventArgs e)
+        {
+            AddCdWindow addCdWindow = new AddCdWindow();
+            addCdWindow.ShowDialog();
+
+            _cds = Repository.GetInstance().GetAllCds();
+            lbxCds.ItemsSource = _cds;
+        }
+    }
 }

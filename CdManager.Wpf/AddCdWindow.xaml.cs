@@ -13,51 +13,55 @@ using System.Windows.Shapes;
 
 namespace CdManager.Wpf
 {
-  /// <summary>
-  /// Interaction logic for AddCdWindow.xaml
-  /// </summary>
-  public partial class AddCdWindow : Window
-  {
-    private Cd _newCd;
-
-    public AddCdWindow()
-    {
-      InitializeComponent();
-      Loaded += new RoutedEventHandler(AddCdWindow_Loaded);
-    }
-
-    void AddCdWindow_Loaded(object sender, RoutedEventArgs e)
-    {
-      btSave.Click += BtSave_Click;
-      btCancel.Click += BtCancel_Click;
-
-      _newCd = new Cd
-      {
-        AlbumTitle = "< hier Titel eingeben >"
-      };
-      grdCdFields.DataContext = _newCd;
-    }
-
     /// <summary>
-    /// Button Cancel gedrückt
+    /// Interaction logic for AddCdWindow.xaml
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    void BtCancel_Click(object sender, RoutedEventArgs e)
+    public partial class AddCdWindow : Window
     {
-      Close();
-    }
+        public Cd SelectedCd { get; }
+        public AddCdWindow()
+        {
+            InitializeComponent();
+            Loaded += AddCdWindow_Loaded;
+        }
 
-    /// <summary>
-    /// Button Save gedrückt
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    void BtSave_Click(object sender, RoutedEventArgs e)
-    {
-      //Neue Cd in Repository hinzufügen - ohne Fehlerprüfung
-      Repository.GetInstance().AddCd(_newCd);
-      Close();
+        public AddCdWindow(Cd selectedCd)
+        {
+            InitializeComponent();
+            SelectedCd = selectedCd;
+            Loaded += EditCdWindow_Loaded;
+        }
+
+        private void EditCdWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            btnCancel.Click += new RoutedEventHandler(BtnCancel_Click);
+            btnSave.Click += new RoutedEventHandler(BtnSave_Click);
+
+            txtTitle.Text = "Cd Bearbeiten";
+            DataContext = new Cd() { AlbumTitle = SelectedCd.AlbumTitle, Artist = SelectedCd.Artist };
+        }
+
+        private void AddCdWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            btnCancel.Click += new RoutedEventHandler(BtnCancel_Click);
+            btnSave.Click += new RoutedEventHandler(BtnSave_Click);
+            DataContext = new Cd();
+        }
+
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedCd != null)
+            {
+                Repository.GetInstance().RemoveCd(SelectedCd);
+            }
+
+            Repository.GetInstance().AddCd(DataContext as Cd);
+            Close();
+        }
     }
-  }
 }
